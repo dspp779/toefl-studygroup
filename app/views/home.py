@@ -18,13 +18,16 @@ def index():
 @home.route('/vocabulary/<data_type>/<id>')
 def vocabulary(data_type, id):
     data = Vocabulary.query.filter_by(id=id).first()
-    json_data = {}
-    with open(path.abspath(path.dirname(__file__)) + '/../static/vocabulary/' + data.file_name, 'r') as f:
-        json_data = json.load(f)
+    filename = data.file_name
+    with open(path.abspath(path.dirname(__file__)) + '/../static/vocabulary/' + filename, 'r') as f:
+        vocabularies = json.load(f)
 
         if data_type == 'a':
-            json_data = [d[0] for d in json_data]
+            vocabularies = [d[0] for d in vocabularies]
         elif data_type == 'q':
-            json_data = [d[1] for d in json_data]
+            vocabularies = [d[1] for d in vocabularies]
 
-        return jsonify(json_data)
+        return jsonify({
+            'name': filename,
+            'entries': vocabularies
+        })
